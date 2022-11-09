@@ -8,18 +8,13 @@ import AuthContext from "../context/auth-context";
 
 const Navigation = (props) =>{
 
-    const LogOutBtn = () =>{
-        props.authState.token = null;
-        props.authState.userId= null;
-    };
-
     return (
     <AuthContext.Consumer>
         {(context) =>{
             return (
                 <Navbar className='fixed-top' variant="dark" bg="dark" display="block" expand="lg">
             <Container fluid>
-            <Navbar.Toggle className='ma-auto'/>
+            {context.token && <Navbar.Toggle className='ma-auto'/>}
             <Navbar.Brand>HEKTOR</Navbar.Brand>
             {context.token && 
             <React.Fragment>
