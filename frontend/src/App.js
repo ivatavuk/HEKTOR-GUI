@@ -26,7 +26,6 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <React.Fragment>
-          <Navigation authState={this.state}/>
           <AuthContext.Provider 
             value={{
               token:this.state.token, 
@@ -34,11 +33,16 @@ class App extends React.Component {
               login: this.login, 
               logout: this.logout
               }}>
+            <Navigation/>
             <Routes >
               {!this.state.token && <Route path="/auth" element={<AuthPage/>}/>}
               {this.state.token &&<Route path="/home" element={<HomePage/>}/> }
               {this.state.token &&<Route path="/status" element={<StatusPage/>}/> }
+             
               {!this.state.token && <Route path="/" element={<Navigate to="/auth" replace/>}/>}
+              {!this.state.token && <Route path="/home" element={<Navigate to="/auth" replace/>}/>}
+              {!this.state.token && <Route path="/status" element={<Navigate to="/auth" replace/>}/>}
+              
               {this.state.token && <Route path="/" element={<Navigate to="/home" replace/>}/>}
               {this.state.token && <Route path="/auth" element={<Navigate to="/home" replace/>}/>}
               
