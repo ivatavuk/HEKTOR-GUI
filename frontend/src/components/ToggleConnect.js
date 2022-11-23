@@ -1,18 +1,31 @@
 import React from 'react'
 import { useROS } from 'react-ros'
+
 function ToggleConnect() {
-let { isConnected, url, changeUrl, toggleConnection } = useROS();
-url = " ws://0.0.0.0:9090"
-let connected_text = "connected to " + url
+
+const { isConnected, topics, url, changeUrl, toggleConnection } = useROS();
+
 return (
 <div>
-    <br/>
-    <br/>
-    <br/>
-<p>
-<b>Simple connect:  </b><button onClick={toggleConnection}>Toggle Connect</button>  <br />
-<b>Status of ROS:</b> {isConnected ? connected_text: "not connected"}   <br />
-</p>
+      <p>
+        <b>Simple connect: </b>
+        <button onClick={toggleConnection}>Toggle Connect</button> <br />
+        <b>ROS url input: </b>
+        <input
+          name="urlInput"
+          defaultValue={url}
+          onChange={(event) => changeUrl(event.target.value)}
+        />{" "}
+        <br />
+        <b>ROS url to connect to: </b> {url} <br />
+        <b>Status of ROS:</b> {isConnected ? "connected" : "not connected"}{" "}
+        <br />
+        <b>Topics detected:</b>
+        <br />
+        {topics.map((topic, i) => (
+          <li key={i}> {topic.path}</li>
+        ))}
+      </p>
 </div>
 );
 }
