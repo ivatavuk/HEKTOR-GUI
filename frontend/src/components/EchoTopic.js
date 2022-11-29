@@ -49,6 +49,7 @@ function EchoTopic() {
       );
     }
   };
+  
   const handleQueue = (queueInput) => {
     setQueue(queueInput);
   };

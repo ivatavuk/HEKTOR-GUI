@@ -3,24 +3,6 @@ const User = require('../../models/user');
 const jwt = require('jsonwebtoken');
 
 module.exports =  {
-    users: async (args, req) => {
-         //check authentication on request
-         if(!req.isAuth){
-            throw new Error("Unauthenticated");
-        }
-        try{
-        const users = await User.find();
-            return users.map(user=>{
-                return {
-                    ...user._doc,
-                    _id: user.id,
-                    password: null
-                };
-            });
-        }catch(err){
-            throw err;
-        }
-    },
     createUser : async args => {
         try{
         //pronadi ako postoji vec email u bazi

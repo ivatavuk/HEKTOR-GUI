@@ -11,7 +11,11 @@ const userSchema = new Schema({
     password:{
         type:String,
         required:true
-    }
+    },
+    createdRobots: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Robot'
+    }]
 });
 
 module.exports = mongoose.model('User',userSchema);

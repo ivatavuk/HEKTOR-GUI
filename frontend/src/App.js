@@ -38,7 +38,7 @@ class App extends React.Component {
               {!this.state.token && <Route path="/auth" element={<AuthPage/>}/>}
               {this.state.token &&<Route path="/home" element={<HomePage/>}/> }
               
-              {this.state.token &&<Route path="/status" element={<StatusPage/>}/> } 
+              {this.state.token && <Route path="/status" element={<StatusPage/>}/> } 
              
               {!this.state.token && <Route path="/" element={<Navigate to="/auth" replace/>}/>}
               {!this.state.token && <Route path="/home" element={<Navigate to="/auth" replace/>}/>}
