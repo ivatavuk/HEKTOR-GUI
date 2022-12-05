@@ -7,6 +7,7 @@ import AddRobot from "../components/AddRobotPopup";
 import RobotCard from "../components/RobotCard";
 import Row from 'react-bootstrap/Row';
 
+
 function HomePage(){
     const [robotList, setRobotList] = useState([]);
 
@@ -75,10 +76,10 @@ function HomePage(){
 
     return (
         <Container className="page-position h-100">
-            <Button variant="primary" onClick={handleShow}>Add Robot</Button>
+            <Button variant="primary" onClick={handleShow} style={{"margin-bottom":"5px"}}>Add Robot</Button>
             <Row xs={1} md={2} lg={3} className="g-4">
-                {robotList.map(function(d){
-                    return (<RobotCard robot={d} removeRobotFromList= {removeRobotFromList} />)
+                {robotList.map(function(robot){
+                    return (<RobotCard robot={robot} removeRobotFromList= {removeRobotFromList} />)
                 })}
             </Row>
             <AddRobot handleClose = {handleClose} show={show} addRobotToList={addRobotToList} />
