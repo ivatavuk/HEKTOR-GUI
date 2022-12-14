@@ -14,7 +14,11 @@ const robotScheema = new Schema({
     user:{
         type:Schema.Types.ObjectId,
         ref:'User'
-    }
+    },
+    topicList:[{
+        type: Schema.Types.ObjectId,
+        ref: 'Topic'
+    }]
 });
 
 module.exports = mongoose.model('Robot', robotScheema);

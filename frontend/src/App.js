@@ -17,7 +17,8 @@ class App extends React.Component {
       userId:null,
       ros: new ROSLIB.Ros(),
       isConnected: false,
-      url: ' '
+      url: ' ',
+      robotId:null
     };
 
   setConnection = (isConnected) =>{
@@ -26,6 +27,10 @@ class App extends React.Component {
 
   setUrl = (url) =>{
     this.setState({url:url});
+  }
+
+  setRobotId = (robotId) =>{
+    this.setState({robotId:robotId});
   }
   
   login = (token, userId, tokenExpiration)=>{
@@ -45,8 +50,10 @@ class App extends React.Component {
             ros:this.state.ros,
             isConnected: this.state.isConnected,
             url: this.state.url,
+            robotId: this.state.robotId,
             setConnection: this.setConnection,
-            setUrl: this.setUrl
+            setUrl: this.setUrl,
+            setRobotId: this.setRobotId
           }}
           >
             <AuthContext.Provider 

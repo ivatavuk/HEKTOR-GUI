@@ -1,5 +1,6 @@
 const User = require('../../models/user');
 const Robot = require('../../models/robot');
+const Topic = require('../../models/topic');
 
 const robots = async robotID =>{
     try{
@@ -25,11 +26,26 @@ const user = async userID =>{
     }    
 };
 
+const topics = async topicID =>{
+    try{
+    const topics = await Topic.find({_id:{$in:topicID}});
+        return topics.map((topic)=>{
+            return {
+                ...topic._doc,
+                _id: topic.id
+            };
+        });
+    }catch(err){
+        throw err;
+    }    
+};
+
 const transformRobot = (robot) =>{
     return {
         ...robot._doc,
         _id: robot.id,
-        user: user.bind(this, robot.user)
+        user: user.bind(this, robot.user),
+        topicList: topics.bind(this, robot._doc.topicList)
     };
 }
 

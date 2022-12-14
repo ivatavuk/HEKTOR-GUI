@@ -9,11 +9,13 @@ function ConnectToROS(props){
     contextRos.ros.on('connection', () => {
         contextRos.setConnection(true);
         contextRos.setUrl(robotUrl);
+        contextRos.setRobotId(props.robot._id);
     });
 
     contextRos.ros.on('close', function() {
         contextRos.setConnection(false);
         contextRos.setUrl(" ");
+        contextRos.setRobotId(" ");
     });
 
     const handleConnect = (event) =>{

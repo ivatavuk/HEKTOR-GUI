@@ -1,6 +1,6 @@
 const Robot = require('../../models/robot');
-const user = require('../../models/user');
 const User = require('../../models/user');
+const Topic =require('../../models/topic');
 const {transformRobot} = require('./merge');
 
 module.exports ={
@@ -50,11 +50,12 @@ module.exports ={
         // }
         try{
             const robot = await Robot.findById(args.robot_id).populate('user');
-            const user = await User.findById(robot.user._doc._id);
             
-            await User.updateOne({_id: robot.user._doc._id}, {$pull: {createdRobots : { $in: args.robot_id}}});
-            
+            await User.updateOne({_id: robot.user._doc.id}, {$pull: {createdRobots : { $in: args.robot_id}}});
             await Robot.deleteOne({_id: args.robot_id});
+            //delete all the topics related to the robot
+            await Topic.deleteMany({robotId: args.robot_id});
+
             return robot;
         }catch(err){
             throw err;

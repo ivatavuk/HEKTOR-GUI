@@ -4,6 +4,8 @@ export default React.createContext({
     ros:null,
     isConnected:false,
     url:null,
+    robotId:null,
     setConnection: (isConnected)=>{},
-    setUrl: (url)=>{}
+    setUrl: (url)=>{},
+    setRobotId: (robotId)=>{}
 });
