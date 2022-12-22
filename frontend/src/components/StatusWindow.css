@@ -1,0 +1,7 @@
+@media screen and (min-width: 980px) {
+     /* this css will only be used when the screen size is min 800px */
+    .window-size{
+      width : 30%;
+      float : left;
+    }
+}

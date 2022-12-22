@@ -3,7 +3,8 @@ import React, { useContext, useState, useEffect } from 'react';
 import StatusWindow from '../components/StatusWindow';
 import RosContext from "../context/ros-context";
 import TopicContext from '../context/topic-context';
-import AuthContext from '../context/auth-context';
+
+
 import './Main.css';
 
 
@@ -31,7 +32,6 @@ function ViewPage() {
         setSelectedType(selectedType);
     }
 
-
     useEffect(() => {
         //Get topics every 200 ms
         //see if this effects performanse in long run??
@@ -43,7 +43,6 @@ function ViewPage() {
         }, 200);
         return () => clearInterval(interval);
     }, []);
-
 
     return (
         <Container className="page-position h-100">
@@ -57,7 +56,8 @@ function ViewPage() {
                 setTopicTypes: SetTopicTypes,
                 setSelectedTopic: SetSelectedTopic
             }}>
-                <StatusWindow />
+                <StatusWindow/>
+
             </TopicContext.Provider>
         </Container>
     );

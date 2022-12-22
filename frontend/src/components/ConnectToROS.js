@@ -38,7 +38,7 @@ function ConnectToROS(props){
     }
 
     return(
-        contextRos.isConnected && contextRos.url === "ws://"+props.robot.IPv4+":9090" ? 
+        contextRos.isConnected && contextRos.robotId === props.robot._id ? 
         <Button variant="danger" onClick={handleClose}>Disconnect</Button>
         :
         <Button variant="success" onClick={handleConnect}>Connect</Button>   

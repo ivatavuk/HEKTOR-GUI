@@ -4,41 +4,35 @@ import React, { useState, useContext, useEffect } from 'react';
 import SubscribeToTopicPopup from '../components/SubscribeToTopicPopup';
 import StatusWindowField from './StatusWindowField';
 import AuthContext from '../context/auth-context';
+import RosContext from '../context/ros-context';
+import ROSLIB from 'roslib';
+import './StatusWindow.css';
 
 
 function StatusWindow(props) {
   const contextType = useContext(AuthContext);
+  const contextRos = useContext(RosContext);
+
   const [topicList, setTopicList] = useState([]);
 
   useEffect(() => {
     fetchTopics();
   }, []);
 
-  useEffect(() => {
-    displayTopics();
-  }, [topicList]);
-
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const addTopicToList = (topic) => {
-    console.log(topic);
     setTopicList([
       ...topicList,
       topic
     ]);
   }
 
-  const removeTopicFromList = (topicId) =>{
-    let filteredArray = topicList.filter(function(topic) { return topic._id !== topicId });
+  const removeTopicFromList = (topicId) => {
+    let filteredArray = topicList.filter(function (topic) { return topic[1]._id !== topicId });
     setTopicList(filteredArray);
-  }
-
-  const displayTopics = () =>{
-    return topicList.map(function (topic) {
-      return (<StatusWindowField topic={topic} removeTopicFromList={removeTopicFromList} />);
-    })
   }
 
   const fetchTopics = async () => {
@@ -72,7 +66,22 @@ function StatusWindow(props) {
       } else {
         let data = await res.json();
         if (data) {
-          setTopicList(data.data.topics);
+          //value recieved on subscription
+          const value = " ";
+          //topics of the connected robot
+          const filteredTopics = data.data.topics.filter(function (topic) { return topic.robotId === contextRos.robotId });
+          //create an array of objects
+          const listOfROSTopics = filteredTopics.map(function (topic) {
+            return [new ROSLIB.Topic({
+              ros: contextRos.ros,
+              name: topic.topicName,
+              messageType: topic.topicType
+            }),
+              topic,
+              value
+            ]
+          });
+          setTopicList(listOfROSTopics);
         }
       }
     } catch (err) {
@@ -82,17 +91,17 @@ function StatusWindow(props) {
 
 
   return (
-    <Container className='text-light bg-dark rounded' style={{
-      "width": "30%",
-      "float": "left"
-    }}>
+    <Container className='text-light bg-dark rounded window-size' >
       <h5>Status window</h5>
-
-      {displayTopics()}
-
+      {
+        topicList.map(function (topic) {
+          return (<StatusWindowField topic={topic} removeTopicFromList={removeTopicFromList} />);
+        })
+      }
       <br />
       <Button onClick={handleShow} >Add Topic</Button>
       <SubscribeToTopicPopup handleClose={handleClose} show={show} addTopicToList={addTopicToList} />
+
     </Container>
   );
 
