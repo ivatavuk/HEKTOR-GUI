@@ -13,8 +13,13 @@ function StatusWindowField (props) {
             for(const i in arrOfValues){
                 object = object[arrOfValues[i]];
             }
-    
-            props.topic[2] = object;
+            //if can be converted to number 
+            //tu dodaj da ga konvertas samo ako mora ic u graph data.
+            if( Number(object)){
+                props.topic[2] =  Number(object);
+            }else{
+                props.topic[2] = object;
+            }
          };
     
         props.topic[0].subscribe(callbackFunction);

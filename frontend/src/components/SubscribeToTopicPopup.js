@@ -23,6 +23,7 @@ function SubscribeToTopicPopup(props) {
         const topicValue = event.target.topicValue.value;
         const topicName = contextTopic.selectedTopic;
         const topicLable = event.target.topicLable.value;
+        const isGraphData = event.target.isGraphData.checked;
 
         if (robotId.length === 0 ||
             topicType.length === 0 ||
@@ -40,12 +41,14 @@ function SubscribeToTopicPopup(props) {
                     topicName: "${topicName}"
                     topicType:"${topicType}"
                     topicLable:"${topicLable}"
-                    topicValue:"${topicValue}"}){
-                        
+                    topicValue:"${topicValue}"
+                    isGraphData: ${isGraphData}
+                     }){
                         topicName
                         topicType
                         topicLable
                         topicValue
+                        isGraphData
                         _id
                     }
                 }
@@ -76,7 +79,6 @@ function SubscribeToTopicPopup(props) {
                         name: topic.topicName,
                         messageType: topic.topicType
                     })
-                    console.log([rosTopic, topic, value]);
                     props.addTopicToList([rosTopic, topic, value]);
                 }
             }
@@ -111,7 +113,7 @@ function SubscribeToTopicPopup(props) {
                     </Form.Group>
                     <Form.Check
                         type='checkbox'
-                        id={`default-checkbox`}
+                        id={`isGraphData`}
                         label={`Generate real time graph`}
                     />
                 </Modal.Body>

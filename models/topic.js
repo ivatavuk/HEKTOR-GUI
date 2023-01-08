@@ -22,6 +22,10 @@ const topicScheema = new Schema({
     topicValue:{
         type:String,
         required: true
+    },
+    isGraphData:{
+        type:Boolean,
+        required: true
     }
 });
 

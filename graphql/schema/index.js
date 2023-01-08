@@ -23,6 +23,7 @@ type Topic{
     topicType: String!
     topicLable: String!
     topicValue: String!
+    isGraphData: Boolean!
 }
 
 type AuthData{
@@ -47,6 +48,7 @@ input TopicInput{
     topicType: String!
     topicLable: String!
     topicValue: String!
+    isGraphData: Boolean!
 }
 
 type RootQuery{

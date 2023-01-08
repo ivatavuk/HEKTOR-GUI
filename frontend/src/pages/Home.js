@@ -7,7 +7,6 @@ import AddRobot from "../components/AddRobotPopup";
 import RobotCard from "../components/RobotCard";
 import Row from 'react-bootstrap/Row';
 
-
 function HomePage(){
     const [robotList, setRobotList] = useState([]);
 

@@ -9,7 +9,8 @@ module.exports ={
             topicType: args.topic_input.topicType,
             topicLable: args.topic_input.topicLable,
             topicValue: args.topic_input.topicValue,
-            robotId: args.topic_input.robotId
+            robotId: args.topic_input.robotId,
+            isGraphData: args.topic_input.isGraphData
         })
         let createdTopic;
         try{

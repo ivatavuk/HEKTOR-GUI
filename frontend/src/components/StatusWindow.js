@@ -13,8 +13,6 @@ function StatusWindow(props) {
   const contextType = useContext(AuthContext);
   const contextRos = useContext(RosContext);
 
-  const [topicList, setTopicList] = useState([]);
-
   useEffect(() => {
     fetchTopics();
   }, []);
@@ -24,15 +22,17 @@ function StatusWindow(props) {
   const handleShow = () => setShow(true);
 
   const addTopicToList = (topic) => {
-    setTopicList([
-      ...topicList,
+    props.setTopicList([
+      ...props.topicList,
       topic
     ]);
   }
 
   const removeTopicFromList = (topicId) => {
-    let filteredArray = topicList.filter(function (topic) { return topic[1]._id !== topicId });
-    setTopicList(filteredArray);
+    let filteredArray = props.topicList.filter(function (topic) { 
+      return topic[1]._id !== topicId
+    });
+    props.setTopicList(filteredArray);
   }
 
   const fetchTopics = async () => {
@@ -46,6 +46,7 @@ function StatusWindow(props) {
                 topicLable
                 topicValue
                 robotId
+                isGraphData
               }
           }
       `
@@ -72,6 +73,12 @@ function StatusWindow(props) {
           const filteredTopics = data.data.topics.filter(function (topic) { return topic.robotId === contextRos.robotId });
           //create an array of objects
           const listOfROSTopics = filteredTopics.map(function (topic) {
+            //ako je topic namjenjen za plotanje, postaviI isGraphData na true
+            //kako bi se prikazao GraphWindow
+            if(topic.isGraphData){
+                props.setIsGraphData(true);
+            }
+
             return [new ROSLIB.Topic({
               ros: contextRos.ros,
               name: topic.topicName,
@@ -81,7 +88,7 @@ function StatusWindow(props) {
               value
             ]
           });
-          setTopicList(listOfROSTopics);
+          props.setTopicList(listOfROSTopics);
         }
       }
     } catch (err) {
@@ -91,10 +98,10 @@ function StatusWindow(props) {
 
 
   return (
-    <Container className='text-light bg-dark rounded window-size' >
+    <Container className='text-light bg-dark rounded' >
       <h5>Status window</h5>
       {
-        topicList.map(function (topic) {
+        props.topicList.map(function (topic) {
           return (<StatusWindowField topic={topic} removeTopicFromList={removeTopicFromList} />);
         })
       }
