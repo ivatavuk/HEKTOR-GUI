@@ -16,7 +16,7 @@ function StatusWindowField (props) {
             //if can be converted to number 
             //tu dodaj da ga konvertas samo ako mora ic u graph data.
             if( Number(object)){
-                props.topic[2] =  Number(object);
+                props.topic[2] =  Number(object).toFixed(2); //Number shows only 2 decimal places
             }else{
                 props.topic[2] = object;
             }
