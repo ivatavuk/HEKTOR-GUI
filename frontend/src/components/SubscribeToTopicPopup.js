@@ -99,7 +99,7 @@ function SubscribeToTopicPopup(props) {
             </Modal.Header>
             <Form onSubmit={handleSubmit}>
                 <Modal.Body>
-                    <Form.Group className="mb-3 w-100" style={{ "display": "inline-flex", "justify-content": "space-between" }}>
+                    <Form.Group className="mb-3 w-100" style={{ "display": "inline-flex", "justifyContent": "space-between" }}>
                         <Form.Label>Select a topic</Form.Label>
                         <TopicDropdown className="float-right" />
                     </Form.Group>

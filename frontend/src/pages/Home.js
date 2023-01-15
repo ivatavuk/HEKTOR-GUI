@@ -75,10 +75,10 @@ function HomePage(){
 
     return (
         <Container className="page-position h-100">
-            <Button variant="primary" onClick={handleShow} style={{"margin-bottom":"5px"}}>Add Robot</Button>
+            <Button variant="primary" onClick={handleShow} style={{"marginBottom":"5px"}}>Add Robot</Button>
             <Row xs={1} md={2} lg={3} className="g-4">
-                {robotList.map(function(robot){
-                    return (<RobotCard robot={robot} removeRobotFromList= {removeRobotFromList} />)
+                {robotList.map(function(robot, index){
+                    return (<RobotCard robot={robot} key={index} removeRobotFromList= {removeRobotFromList} />)
                 })}
             </Row>
             <AddRobot handleClose = {handleClose} show={show} addRobotToList={addRobotToList} />

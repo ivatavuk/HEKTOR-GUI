@@ -101,8 +101,8 @@ function StatusWindow(props) {
     <Container className='text-light bg-dark rounded' >
       <h5>Status window</h5>
       {
-        props.topicList.map(function (topic) {
-          return (<StatusWindowField topic={topic} removeTopicFromList={removeTopicFromList} />);
+        props.topicList.map(function (topic, index) {
+          return (<StatusWindowField key={index} topic={topic} removeTopicFromList={removeTopicFromList} />);
         })
       }
       <br />

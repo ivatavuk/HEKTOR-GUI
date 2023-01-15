@@ -1,10 +1,10 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useState, useEffect} from "react";
 import RosContext from "../context/ros-context";
 import Button from 'react-bootstrap/Button';
 
 function ConnectToROS(props){
     const contextRos = useContext(RosContext);
-    const [robotUrl, setRobotUrl] = useState();
+    const [robotUrl, setRobotUrl] = useState("");
 
     contextRos.ros.on('connection', () => {
         contextRos.setConnection(true);
@@ -26,8 +26,11 @@ function ConnectToROS(props){
         }
         const robotIPv4 = props.robot.IPv4;
         setRobotUrl("ws://"+robotIPv4+":9090");
-
-        contextRos.ros.connect(robotUrl);
+        //when first setting the url data isn't updated
+        //that's why we have to click twice to connect
+        if(robotUrl){
+            contextRos.ros.connect(robotUrl);
+        }
     }
     
     const handleClose = (event) =>{

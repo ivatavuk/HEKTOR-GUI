@@ -8,7 +8,7 @@ import TopicDropdown from './TopicDropdown';
 function AddVideoFeedPopup(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        
         props.handleClose();
     }
 
@@ -19,17 +19,13 @@ function AddVideoFeedPopup(props) {
             </Modal.Header>
             <Form onSubmit={handleSubmit}>
             <Modal.Body>
-                    <Form.Group className="mb-3 w-100" style={{ "display": "inline-flex", "justify-content": "space-between" }}>
+                    <Form.Group className="mb-3 w-100" style={{ "display": "inline-flex", "justifyContent": "space-between" }}>
                         <Form.Label>Select a topic</Form.Label>
-                        {/* <TopicDropdown className="float-right" /> */}
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="topicValue">
-                        <Form.Label>Topic value to display</Form.Label>
-                        <Form.Control type="input" placeholder="battery_voltage" />
+                        <TopicDropdown className="float-right" />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="topicLable">
                         <Form.Label>Window name</Form.Label>
-                        <Form.Control type="input" placeholder="battery status" />
+                        <Form.Control type="input" placeholder="Front camera" />
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
