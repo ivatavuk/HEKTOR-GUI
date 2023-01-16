@@ -39,7 +39,7 @@ function StatusWindow(props) {
     const requestBody = {
       query: `
           query{
-              topics{
+              topics(robotId:"${contextRos.robotId}"){
                 _id
                 topicName
                 topicType
@@ -69,10 +69,8 @@ function StatusWindow(props) {
         if (data) {
           //value recieved on subscription
           const value = " ";
-          //topics of the connected robot
-          const filteredTopics = data.data.topics.filter(function (topic) { return topic.robotId === contextRos.robotId });
           //create an array of objects
-          const listOfROSTopics = filteredTopics.map(function (topic) {
+          const listOfROSTopics = data.data.topics.map(function (topic) {
             //ako je topic namjenjen za plotanje, postaviI isGraphData na true
             //kako bi se prikazao GraphWindow
             if(topic.isGraphData){

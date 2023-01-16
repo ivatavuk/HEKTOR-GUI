@@ -1,12 +1,14 @@
 const authResolver = require('./auth');
 const robotResolver = require('./robots');
-const topicResolver = require('./topics')
+const topicResolver = require('./topics');
+const videoFeedResolver = require('./videoFeed');
 
 //Dodajes ostale resolvere
 const rootResolver = {
     ...authResolver,
     ...robotResolver,
-    ...topicResolver
+    ...topicResolver,
+    ...videoFeedResolver
 };
 
 module.exports = rootResolver;

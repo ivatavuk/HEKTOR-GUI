@@ -2,6 +2,7 @@ import Container from 'react-bootstrap/Container'
 import React, { useContext, useState, useEffect } from 'react';
 import StatusWindow from '../components/StatusWindow';
 import RosContext from "../context/ros-context";
+import AuthContext from '../context/auth-context';
 import TopicContext from '../context/topic-context';
 import GraphWindow from '../components/GraphWindow';
 import Row from 'react-bootstrap/esm/Row';
@@ -15,9 +16,13 @@ import './Main.css';
 
 function ViewPage() {
     const contextRos = useContext(RosContext);
+    const contextType = useContext(AuthContext);
     // A list of objects containing ROS topic, topic data, value recieved after subscribing and a boolean
     // value describing if the topic is ment for plotting.
     const [topicList, setTopicList] = useState([]);
+    //A list of videofeed data
+    const [videoFeedList, setVideoFeedList] = useState([]);
+
     //Hook used to check if there is at least one topic ment for ploting
     const [isGraphData, setIsGraphData] = useState(false);
     const [topics, setTopics] = useState([]);
@@ -51,6 +56,22 @@ function ViewPage() {
         setSelectedType(selectedType);
     }
 
+    //function to add a videofeed to videofeedlist
+    const addVideoFeedToList = (videoFeed) =>{
+        setVideoFeedList([
+            ...videoFeedList,
+            videoFeed
+        ]
+        );
+    }
+    //function to delete a videofeed from videofeedlist
+    const removeVideoFeedFromList = (videoFeedId) =>{
+        let filteredArray = videoFeedList.filter(function (videofeed) { 
+            return videofeed._id !== videoFeedId
+          });
+        setVideoFeedList(filteredArray);
+    }
+
     //svaki put kada se izmjeni lista topica pogledaj ako postoji topic za prikaz plotanja
     //ako postoji setiraj isGraphData na true ako ne postoji niti jeda setaj na false
     useEffect(() => {
@@ -68,6 +89,9 @@ function ViewPage() {
     }, [topicList]);
 
     useEffect(() => {
+        //call function to fetch videofeed data
+        fetchVideoFeedData();
+
         //Get topics every 200 ms
         //see if this effects performanse in long run??
         const interval = setInterval(() => {
@@ -78,6 +102,44 @@ function ViewPage() {
         }, 200);
         return () => clearInterval(interval);
     }, []);
+
+    //Function that fetches videofeed data (topics from which we stream videos)
+    const fetchVideoFeedData = async () =>{
+        const requestBody = {
+            query: `
+            query{
+                videoFeeds(robotId:"${contextRos.robotId}"){
+                  _id
+                  topicName
+                  windowName
+                  robotId
+                }
+              }
+            `
+          };
+          const token = contextType.token;
+          try {
+            const res = await fetch("http://localhost:8000/graphql", {
+              method: "POST",
+              body: JSON.stringify(requestBody),
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+              }
+            });
+      
+            if (res.status !== 200 && res.status !== 201) {
+              throw new Error("Faild!");
+            } else {
+              let data = await res.json();
+              if (data) {
+                setVideoFeedList(data.data.videoFeeds);
+              }
+            }
+          } catch (err) {
+            throw err;
+          }
+    }
 
     return (
         <Container className="page-position h-100">
@@ -105,7 +167,7 @@ function ViewPage() {
                     </Dropdown.Menu>
                 </Dropdown>
 
-                <AddVideoFeedPopup show={show} handleClose={handleClose} />
+                <AddVideoFeedPopup show={show} addVideoFeedToList={addVideoFeedToList} handleClose={handleClose} />
 
                 <Row xs={1} md={2} lg={2}>
                     <Col>
@@ -116,9 +178,17 @@ function ViewPage() {
                         <Col>
                             <GraphWindow topicList={topicList}></GraphWindow>
                         </Col>}
-                    <Col>
-                        <VideoStream topicList={topicList}></VideoStream>
-                    </Col>
+                </Row>
+                <Row xs={1} md={2} lg={2}>
+                    {videoFeedList.length > 0 &&
+                    videoFeedList.map((videoFeed,index)=>{
+                        return(
+                            <Col key={index}>
+                                <VideoStream removeVideoFeedFromList={removeVideoFeedFromList} videoFeed={videoFeed}></VideoStream>
+                            </Col>
+                        );
+                    })
+                    }
                 </Row>
             
             </TopicContext.Provider>

@@ -23,7 +23,7 @@ function TopicDropdown(props) {
             </Dropdown.Toggle>
             <Dropdown.Menu>
                 {contextTopic.topics.map(function (topic, index) {
-                    return <Dropdown.Item id={index} onClick={handleTopicSelect}>{topic}</Dropdown.Item>;
+                    return <Dropdown.Item id={index} key={index} onClick={handleTopicSelect}>{topic}</Dropdown.Item>;
                 })}
             </Dropdown.Menu>
         </Dropdown>

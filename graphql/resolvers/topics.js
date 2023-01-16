@@ -42,7 +42,7 @@ module.exports ={
     },
     topics: async(args) =>{
         try{
-            const topics = await Topic.find();
+            const topics = await Topic.find({robotId: args.robotId});
             return topics.map(topic =>{
                 return {
                     ...topic._doc,

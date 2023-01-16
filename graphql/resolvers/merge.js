@@ -1,6 +1,7 @@
 const User = require('../../models/user');
 const Robot = require('../../models/robot');
 const Topic = require('../../models/topic');
+const VideoFeed = require('../../models/videoFeed');
 
 const robots = async robotID =>{
     try{
@@ -40,12 +41,27 @@ const topics = async topicID =>{
     }    
 };
 
+const videoFeeds = async videoFeedID =>{
+    try{
+    const videoFeed = await VideoFeed.find({_id:{$in:videoFeedID}});
+        return videoFeed.map((data)=>{
+            return {
+                ...data._doc,
+                _id: data.id
+            };
+        });
+    }catch(err){
+        throw err;
+    }    
+};
+
 const transformRobot = (robot) =>{
     return {
         ...robot._doc,
         _id: robot.id,
         user: user.bind(this, robot.user),
-        topicList: topics.bind(this, robot._doc.topicList)
+        topicList: topics.bind(this, robot._doc.topicList),
+        videoFeedList: videoFeeds.bind(this, robot._doc.videoFeedList)
     };
 }
 

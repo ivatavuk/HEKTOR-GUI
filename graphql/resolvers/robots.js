@@ -1,6 +1,7 @@
 const Robot = require('../../models/robot');
 const User = require('../../models/user');
-const Topic =require('../../models/topic');
+const Topic = require('../../models/topic');
+const VideoFeed = require('../../models/videoFeed');
 const {transformRobot} = require('./merge');
 
 module.exports ={
@@ -16,9 +17,9 @@ module.exports ={
         }
     },
     createRobot: async(args, req) =>{
-        if(!req.isAuth){
-            throw new Error("Unauthenticated");
-        }
+        // if(!req.isAuth){
+        //     throw new Error("Unauthenticated");
+        // }
         try{
         const robot = new Robot({
             name: args.robot_input.name,
@@ -51,10 +52,12 @@ module.exports ={
         try{
             const robot = await Robot.findById(args.robot_id).populate('user');
             
-            await User.updateOne({_id: robot.user._doc.id}, {$pull: {createdRobots : { $in: args.robot_id}}});
+            await User.updateOne({_id: req.userId}, {$pull: {createdRobots : { $in: args.robot_id}}});
             await Robot.deleteOne({_id: args.robot_id});
             //delete all the topics related to the robot
             await Topic.deleteMany({robotId: args.robot_id});
+            //delete all video feeds related to the robot
+            await VideoFeed.deleteMany({robotId: args.robot_id});
 
             return robot;
         }catch(err){

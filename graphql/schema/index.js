@@ -14,6 +14,7 @@ type Robot{
     IPv4: String!
     user: User!
     topicList: [Topic!]
+    videoFeedList: [VideoFeed!]
 }
 
 type Topic{
@@ -24,6 +25,13 @@ type Topic{
     topicLable: String!
     topicValue: String!
     isGraphData: Boolean!
+}
+
+type VideoFeed{
+    _id: ID!
+    topicName: String!
+    windowName: String!
+    robotId: String!
 }
 
 type AuthData{
@@ -51,9 +59,16 @@ input TopicInput{
     isGraphData: Boolean!
 }
 
+input VideoFeedInput{
+    topicName: String!
+    windowName: String!
+    robotId: String!
+}
+
 type RootQuery{
     robots: [Robot!]!
-    topics: [Topic!]!
+    topics(robotId:String!): [Topic!]!
+    videoFeeds(robotId:String!): [VideoFeed!]!
     login(email:String!, password:String!): AuthData!
 }
 
@@ -63,6 +78,8 @@ type RootMutation{
     deleteRobot(robot_id: ID!): Robot!
     createTopic(topic_input: TopicInput): Topic
     deleteTopic(topic_id: ID!): Topic!
+    createVideoFeed(video_feed: VideoFeedInput): VideoFeed
+    deleteVideoFeed(video_feed_id: ID!): VideoFeed!
 }
 
 schema{

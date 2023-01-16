@@ -18,6 +18,10 @@ const robotScheema = new Schema({
     topicList:[{
         type: Schema.Types.ObjectId,
         ref: 'Topic'
+    }],
+    videoFeedList:[{
+        type: Schema.Types.ObjectId,
+        ref: 'VideoFeed'
     }]
 });
 

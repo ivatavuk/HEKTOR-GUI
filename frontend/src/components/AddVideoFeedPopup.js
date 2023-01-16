@@ -1,14 +1,73 @@
 import React, { useState, useContext } from "react";
 import AuthContext from '../context/auth-context';
+import RosContext from "../context/ros-context";
+import TopicContext from "../context/topic-context";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form'
 import TopicDropdown from './TopicDropdown';
 
 function AddVideoFeedPopup(props) {
+    const contextType = useContext(AuthContext);
+    const contextRos = useContext(RosContext);
+    const contextTopic = useContext(TopicContext);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
+        const topicName = contextTopic.selectedTopic;
+        const robotId = contextRos.robotId;
+        const windowName = event.target.windowName.value;
+
+        console.log(topicName,robotId,windowName);
+
+        if(topicName.trim().length === 0 ||
+        robotId.trim().length === 0 ||
+        windowName.trim().length === 0){
+            return;
+        }
+
+        //Save video feed to DB and add to videofeedlist
+        const requestBody = {
+            query: `
+                mutation {
+                    createVideoFeed(video_feed:{
+                        topicName:"${topicName}"
+                        windowName:"${windowName}"
+                   	    robotId: "${robotId}"
+                   }){
+                     _id
+                     topicName
+                     windowName
+                     robotId
+                   }
+                 }
+            `
+        };
+
+        const token = contextType.token;
+
+        try {
+            const res = await fetch("http://localhost:8000/graphql", {
+                method: "POST",
+                body: JSON.stringify(requestBody),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error("Faild!");
+            } else {
+                const submitData= await res.json();
+                console.log(submitData.data.createVideoFeed);
+                props.addVideoFeedToList(submitData.data.createVideoFeed);
+            }
+        } catch (err) {
+            throw err;
+        }
+
         props.handleClose();
     }
 
@@ -23,7 +82,7 @@ function AddVideoFeedPopup(props) {
                         <Form.Label>Select a topic</Form.Label>
                         <TopicDropdown className="float-right" />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="topicLable">
+                    <Form.Group className="mb-3" controlId="windowName">
                         <Form.Label>Window name</Form.Label>
                         <Form.Control type="input" placeholder="Front camera" />
                     </Form.Group>
