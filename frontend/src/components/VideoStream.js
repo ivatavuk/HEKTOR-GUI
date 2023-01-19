@@ -27,7 +27,7 @@ function VideoStream(props) {
             topicNameSplit.pop(topicNameSplit.length-1);
             //reconstruct topic name
             const name = topicNameSplit.join('/');
-
+            console.log(IPv4);
             viewer = new Viewer({
                 divID: props.videoFeed._id,
                 host: IPv4,
