@@ -29,6 +29,8 @@ function ViewPage() {
     const [topicTypes, setTopicTypes] = useState([]);
     const [selectedTopic, setSelectedTopic] = useState([]);
     const [selectedType, setSelectedType] = useState();
+    const [width, setWidth] = useState();
+    const [height, setHeight] = useState();
 
     //Hooks for displaying AddVideoFeedPopup
     const [show, setShow] = useState(false);
@@ -66,8 +68,9 @@ function ViewPage() {
     }
     //function to delete a videofeed from videofeedlist
     const removeVideoFeedFromList = (videoFeedId) =>{
+        //Tu kada trazis id vjv moras trazit pod videofeed[0]; Provjeri !
         let filteredArray = videoFeedList.filter(function (videofeed) { 
-            return videofeed._id !== videoFeedId
+            return videofeed[0]._id !== videoFeedId
           });
         setVideoFeedList(filteredArray);
     }
@@ -89,6 +92,8 @@ function ViewPage() {
     }, [topicList]);
 
     useEffect(() => {
+        //set the event listener to dinamicly resizes the canvas
+        window.onresize = reportWindowSize;
         //call function to fetch videofeed data
         fetchVideoFeedData();
 
@@ -133,13 +138,49 @@ function ViewPage() {
             } else {
               let data = await res.json();
               if (data) {
-                setVideoFeedList(data.data.videoFeeds);
+                //Dodaj polje u objektu koje ce sadrzavat viewera
+                let viewer = {};
+                let VideoFeedObjects = data.data.videoFeeds.map((videofeed)=>{
+                    return [videofeed, viewer];
+                });
+                setVideoFeedList(VideoFeedObjects);
               }
             }
           } catch (err) {
             throw err;
           }
     }
+
+        // Function that dinamicly resizes the canvas
+        const reportWindowSize = (e) => {      
+            let WW =  window.outerWidth ;
+            if(WW<500){
+                //xs
+                setWidth(312);
+                setHeight(312);
+            }else if(WW>=500 && WW < 768){
+               //sm
+               setWidth(460);
+               setHeight(312);
+            }else if(WW>=768 && WW<992){
+               //md 
+               setWidth(300);
+               setHeight(312);
+            }else if(WW >=992 && WW<1200){
+                //l
+                setWidth(420);
+                setHeight(312);
+            }else if(WW >=1200 && WW <1400){
+                //xl
+                setWidth(500);
+                setHeight(400);
+            }else if(WW >1400){
+                //xxl
+                setWidth(612);
+                setHeight(400);
+            }
+          }
+        
 
     return (
         <Container className="page-position h-100">
@@ -183,8 +224,8 @@ function ViewPage() {
                     {videoFeedList.length > 0 &&
                     videoFeedList.map((videoFeed,index)=>{
                         return(
-                            <Col key={index}>
-                                <VideoStream removeVideoFeedFromList={removeVideoFeedFromList} videoFeed={videoFeed}></VideoStream>
+                            <Col id={"VideoFeedCol"+index} key={index}>
+                                <VideoStream width ={width} height={height} removeVideoFeedFromList={removeVideoFeedFromList} videoFeed={videoFeed}></VideoStream>
                             </Col>
                         );
                     })

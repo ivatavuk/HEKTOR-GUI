@@ -61,8 +61,10 @@ function AddVideoFeedPopup(props) {
                 throw new Error("Faild!");
             } else {
                 const submitData= await res.json();
-                console.log(submitData.data.createVideoFeed);
-                props.addVideoFeedToList(submitData.data.createVideoFeed);
+                // Dodaj polje viewera prije nego sta dodas u listu video feeda
+                let viewer = {};
+                let VideoFeedObject = [submitData.data.createVideoFeed, viewer];          
+                props.addVideoFeedToList(VideoFeedObject);
             }
         } catch (err) {
             throw err;
