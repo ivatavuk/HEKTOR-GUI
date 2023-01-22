@@ -29,8 +29,8 @@ function ViewPage() {
     const [topicTypes, setTopicTypes] = useState([]);
     const [selectedTopic, setSelectedTopic] = useState([]);
     const [selectedType, setSelectedType] = useState();
-    const [width, setWidth] = useState();
-    const [height, setHeight] = useState();
+    const [width, setWidth] = useState(600);
+    const [height, setHeight] = useState(400);
 
     //Hooks for displaying AddVideoFeedPopup
     const [show, setShow] = useState(false);

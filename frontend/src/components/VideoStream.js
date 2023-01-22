@@ -25,7 +25,7 @@ function VideoStream(props) {
                 divID: props.videoFeed[0]._id,
                 host: IPv4,
                 port: '9000',
-                width: document.getElementById('VideoFeedCol0').offsetWidth - 51,
+                width: 400,
                 height: 400,
                 topic: name,
                 type: 'ros_compressed',
@@ -36,7 +36,7 @@ function VideoStream(props) {
                 divID: props.videoFeed[0]._id,
                 host: IPv4,
                 port: '9000',
-                width: document.getElementById('VideoFeedCol0').offsetWidth - 51,
+                width: 400,
                 height: 400,
                 topic: topicName,
             });
