@@ -1,7 +1,7 @@
 const Robot = require('../../models/robot');
 const User = require('../../models/user');
 const Topic = require('../../models/topic');
-const VideoFeed = require('../../models/videoFeed');
+const DataStream = require('../../models/dataStream');
 const {transformRobot} = require('./merge');
 
 module.exports ={
@@ -56,8 +56,8 @@ module.exports ={
             await Robot.deleteOne({_id: args.robot_id});
             //delete all the topics related to the robot
             await Topic.deleteMany({robotId: args.robot_id});
-            //delete all video feeds related to the robot
-            await VideoFeed.deleteMany({robotId: args.robot_id});
+            //delete all data streams related to the robot
+            await DataStream.deleteMany({robotId: args.robot_id});
 
             return robot;
         }catch(err){

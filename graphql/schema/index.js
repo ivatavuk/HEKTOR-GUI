@@ -14,7 +14,7 @@ type Robot{
     IPv4: String!
     user: User!
     topicList: [Topic!]
-    videoFeedList: [VideoFeed!]
+    dataStreamList: [DataStream!]
 }
 
 type Topic{
@@ -27,11 +27,12 @@ type Topic{
     isGraphData: Boolean!
 }
 
-type VideoFeed{
+type DataStream{
     _id: ID!
     topicName: String!
     windowName: String!
     robotId: String!
+    isPointCloud: Boolean!
 }
 
 type AuthData{
@@ -59,16 +60,17 @@ input TopicInput{
     isGraphData: Boolean!
 }
 
-input VideoFeedInput{
+input DataStreamInput{
     topicName: String!
     windowName: String!
     robotId: String!
+    isPointCloud: Boolean!
 }
 
 type RootQuery{
     robots: [Robot!]!
     topics(robotId:String!): [Topic!]!
-    videoFeeds(robotId:String!): [VideoFeed!]!
+    dataStreams(robotId:String!): [DataStream!]!
     login(email:String!, password:String!): AuthData!
 }
 
@@ -78,8 +80,8 @@ type RootMutation{
     deleteRobot(robot_id: ID!): Robot!
     createTopic(topic_input: TopicInput): Topic
     deleteTopic(topic_id: ID!): Topic!
-    createVideoFeed(video_feed: VideoFeedInput): VideoFeed
-    deleteVideoFeed(video_feed_id: ID!): VideoFeed!
+    createDataStream(data_stream: DataStreamInput): DataStream
+    deleteDataStream(data_stream_id: ID!): DataStream!
 }
 
 schema{

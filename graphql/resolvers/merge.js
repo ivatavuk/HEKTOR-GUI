@@ -1,7 +1,7 @@
 const User = require('../../models/user');
 const Robot = require('../../models/robot');
 const Topic = require('../../models/topic');
-const VideoFeed = require('../../models/videoFeed');
+const DataStream = require('../../models/dataStream');
 
 const robots = async robotID =>{
     try{
@@ -41,10 +41,10 @@ const topics = async topicID =>{
     }    
 };
 
-const videoFeeds = async videoFeedID =>{
+const dataStreams = async dataStreamID =>{
     try{
-    const videoFeed = await VideoFeed.find({_id:{$in:videoFeedID}});
-        return videoFeed.map((data)=>{
+    const dataStream = await DataStream.find({_id:{$in:dataStreamID}});
+        return dataStream.map((data)=>{
             return {
                 ...data._doc,
                 _id: data.id
@@ -61,7 +61,7 @@ const transformRobot = (robot) =>{
         _id: robot.id,
         user: user.bind(this, robot.user),
         topicList: topics.bind(this, robot._doc.topicList),
-        videoFeedList: videoFeeds.bind(this, robot._doc.videoFeedList)
+        dataStreamList: dataStreams.bind(this, robot._doc.dataStreamList)
     };
 }
 

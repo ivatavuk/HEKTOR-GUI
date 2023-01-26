@@ -8,8 +8,9 @@ import GraphWindow from '../components/GraphWindow';
 import Row from 'react-bootstrap/esm/Row';
 import Col from 'react-bootstrap/esm/Col';
 import Dropdown from 'react-bootstrap/Dropdown';
-import AddVideoFeedPopup from '../components/AddVideoFeedPopup';
+import AddDataStreamPopup from '../components/AddDataStreamPopup';
 import VideoStream from '../components/VideoStream';
+import PointCloud from '../components/PointCloud';
 
 import './Main.css';
 
@@ -22,6 +23,8 @@ function ViewPage() {
     const [topicList, setTopicList] = useState([]);
     //A list of videofeed data
     const [videoFeedList, setVideoFeedList] = useState([]);
+    //A list of pointcloud data
+    const [pointCloudList, setPointCloudList] = useState([]);
 
     //Hook used to check if there is at least one topic ment for ploting
     const [isGraphData, setIsGraphData] = useState(false);
@@ -32,6 +35,8 @@ function ViewPage() {
     const [width, setWidth] = useState(600);
     const [height, setHeight] = useState(400);
 
+    const [isPointCloud, setIsPointCloud] = useState(false);
+
     //Hooks for displaying AddVideoFeedPopup
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -39,6 +44,11 @@ function ViewPage() {
 
     const handleVideoFeeePopup = (event) =>{
         event.preventDefault();
+        if(event.target.id === "video_feed"){
+            setIsPointCloud(false);
+        }else{
+            setIsPointCloud(true);
+        }
         handleShow(true)
     }   
 
@@ -70,9 +80,23 @@ function ViewPage() {
     const removeVideoFeedFromList = (videoFeedId) =>{
         //Tu kada trazis id vjv moras trazit pod videofeed[0]; Provjeri !
         let filteredArray = videoFeedList.filter(function (videofeed) { 
-            return videofeed[0]._id !== videoFeedId
+            return videofeed[0]._id !== videoFeedId;
           });
         setVideoFeedList(filteredArray);
+    }
+
+    const addPointCloudToList = (pointCloud) =>{
+        setPointCloudList([
+            ...pointCloudList,
+            pointCloud
+        ]);
+    }
+
+    const removePointCloudFromList = (pointCloudId) =>{
+        let filteredArray = pointCloudList.filter(function (pointcloud){
+            return pointcloud[0]._id !== pointCloudId;
+        });
+        setPointCloudList(filteredArray);
     }
 
     //svaki put kada se izmjeni lista topica pogledaj ako postoji topic za prikaz plotanja
@@ -95,7 +119,7 @@ function ViewPage() {
         //set the event listener to dinamicly resizes the canvas
         window.onresize = reportWindowSize;
         //call function to fetch videofeed data
-        fetchVideoFeedData();
+        fetchDataStreams();
 
         //Get topics every 200 ms
         //see if this effects performanse in long run??
@@ -109,15 +133,16 @@ function ViewPage() {
     }, []);
 
     //Function that fetches videofeed data (topics from which we stream videos)
-    const fetchVideoFeedData = async () =>{
+    const fetchDataStreams = async () =>{
         const requestBody = {
             query: `
             query{
-                videoFeeds(robotId:"${contextRos.robotId}"){
+                dataStreams(robotId:"${contextRos.robotId}"){
                   _id
                   topicName
                   windowName
                   robotId
+                  isPointCloud
                 }
               }
             `
@@ -140,10 +165,20 @@ function ViewPage() {
               if (data) {
                 //Dodaj polje u objektu koje ce sadrzavat viewera
                 let viewer = {};
-                let VideoFeedObjects = data.data.videoFeeds.map((videofeed)=>{
-                    return [videofeed, viewer];
+                let VideoFeedObjects = [];
+                let PointCloudObjects = [];
+                data.data.dataStreams.map((data_stream)=>{
+                    if(!data_stream.isPointCloud){
+                         //add video feeds
+                        VideoFeedObjects.push([data_stream, viewer]);
+                    }else{
+                         //add point clouds
+                        PointCloudObjects.push([data_stream, viewer]);
+                    }
                 });
+                //set lists
                 setVideoFeedList(VideoFeedObjects);
+                setPointCloudList(PointCloudObjects);
               }
             }
           } catch (err) {
@@ -203,12 +238,12 @@ function ViewPage() {
                         </svg>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                        <Dropdown.Item id="t1" onClick={handleVideoFeeePopup}>Add video feed</Dropdown.Item>
-                        <Dropdown.Item id="t1">Add point cloud</Dropdown.Item>
+                        <Dropdown.Item id="video_feed" onClick={handleVideoFeeePopup}>Add video feed</Dropdown.Item>
+                        <Dropdown.Item id="data_stream" onClick={handleVideoFeeePopup}>Add point cloud</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 
-                <AddVideoFeedPopup show={show} addVideoFeedToList={addVideoFeedToList} handleClose={handleClose} />
+                <AddDataStreamPopup show={show} isPointCloud={isPointCloud} addPointCloudToList={addPointCloudToList} addVideoFeedToList={addVideoFeedToList} handleClose={handleClose} />
 
                 <Row xs={1} md={2} lg={2}>
                     <Col>
@@ -229,6 +264,15 @@ function ViewPage() {
                             </Col>
                         );
                     })
+                    }
+                    {pointCloudList.length > 0 &&
+                    pointCloudList.map((pointCloud, index)=>{
+                        return(
+                            <Col id={"PointCloud"+index} key={index}>
+                                <PointCloud width ={width} height={height} pointCloud={pointCloud} removePointCloudFromList={removePointCloudFromList} ></PointCloud>
+                            </Col>
+                        );
+                    }) 
                     }
                 </Row>
             

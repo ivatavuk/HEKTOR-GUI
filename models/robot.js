@@ -19,9 +19,9 @@ const robotScheema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Topic'
     }],
-    videoFeedList:[{
+    dataStreamList:[{
         type: Schema.Types.ObjectId,
-        ref: 'VideoFeed'
+        ref: 'DataStream'
     }]
 });
 
