@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from "react";
-import RosContext from "../context/ros-context";
 import AuthContext from "../context/auth-context";
 
 function StatusWindowField (props) {

@@ -1,3 +1,9 @@
 .page-position{
     margin-top: 60px;
 }
+
+.display_inline{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}

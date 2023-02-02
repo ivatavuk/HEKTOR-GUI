@@ -7,10 +7,12 @@ import TopicContext from '../context/topic-context';
 import GraphWindow from '../components/GraphWindow';
 import Row from 'react-bootstrap/esm/Row';
 import Col from 'react-bootstrap/esm/Col';
+import Button from 'react-bootstrap/esm/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 import AddDataStreamPopup from '../components/AddDataStreamPopup';
 import VideoStream from '../components/VideoStream';
 import PointCloud from '../components/PointCloud';
+import CallServicePopup from '../components/CallServicePopup';
 
 import './Main.css';
 
@@ -42,15 +44,20 @@ function ViewPage() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const handleVideoFeeePopup = (event) =>{
+    //Hooks for displaying CallServicePopup
+    const [showServicePopup, setShowServicePopup] = useState(false);
+    const handleCloseServicePopup = () => setShowServicePopup(false);
+    const handleShowServicePopup = () => setShowServicePopup(true);
+
+    const handleVideoFeeePopup = (event) => {
         event.preventDefault();
-        if(event.target.id === "video_feed"){
+        if (event.target.id === "video_feed") {
             setIsPointCloud(false);
-        }else{
+        } else {
             setIsPointCloud(true);
         }
         handleShow(true)
-    }   
+    }
 
     const SetTopics = (topics) => {
         setTopics(topics);
@@ -69,7 +76,7 @@ function ViewPage() {
     }
 
     //function to add a videofeed to videofeedlist
-    const addVideoFeedToList = (videoFeed) =>{
+    const addVideoFeedToList = (videoFeed) => {
         setVideoFeedList([
             ...videoFeedList,
             videoFeed
@@ -77,23 +84,23 @@ function ViewPage() {
         );
     }
     //function to delete a videofeed from videofeedlist
-    const removeVideoFeedFromList = (videoFeedId) =>{
+    const removeVideoFeedFromList = (videoFeedId) => {
         //Tu kada trazis id vjv moras trazit pod videofeed[0]; Provjeri !
-        let filteredArray = videoFeedList.filter(function (videofeed) { 
+        let filteredArray = videoFeedList.filter(function (videofeed) {
             return videofeed[0]._id !== videoFeedId;
-          });
+        });
         setVideoFeedList(filteredArray);
     }
 
-    const addPointCloudToList = (pointCloud) =>{
+    const addPointCloudToList = (pointCloud) => {
         setPointCloudList([
             ...pointCloudList,
             pointCloud
         ]);
     }
 
-    const removePointCloudFromList = (pointCloudId) =>{
-        let filteredArray = pointCloudList.filter(function (pointcloud){
+    const removePointCloudFromList = (pointCloudId) => {
+        let filteredArray = pointCloudList.filter(function (pointcloud) {
             return pointcloud[0]._id !== pointCloudId;
         });
         setPointCloudList(filteredArray);
@@ -133,7 +140,7 @@ function ViewPage() {
     }, []);
 
     //Function that fetches videofeed data (topics from which we stream videos)
-    const fetchDataStreams = async () =>{
+    const fetchDataStreams = async () => {
         const requestBody = {
             query: `
             query{
@@ -146,76 +153,76 @@ function ViewPage() {
                 }
               }
             `
-          };
-          const token = contextType.token;
-          try {
+        };
+        const token = contextType.token;
+        try {
             const res = await fetch("http://localhost:8000/graphql", {
-              method: "POST",
-              body: JSON.stringify(requestBody),
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-              }
+                method: "POST",
+                body: JSON.stringify(requestBody),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                }
             });
-      
+
             if (res.status !== 200 && res.status !== 201) {
-              throw new Error("Faild!");
+                throw new Error("Faild!");
             } else {
-              let data = await res.json();
-              if (data) {
-                //Dodaj polje u objektu koje ce sadrzavat viewera
-                let viewer = {};
-                let VideoFeedObjects = [];
-                let PointCloudObjects = [];
-                data.data.dataStreams.map((data_stream)=>{
-                    if(!data_stream.isPointCloud){
-                         //add video feeds
-                        VideoFeedObjects.push([data_stream, viewer]);
-                    }else{
-                         //add point clouds
-                        PointCloudObjects.push([data_stream, viewer]);
-                    }
-                });
-                //set lists
-                setVideoFeedList(VideoFeedObjects);
-                setPointCloudList(PointCloudObjects);
-              }
+                let data = await res.json();
+                if (data) {
+                    //Dodaj polje u objektu koje ce sadrzavat viewera
+                    let viewer = {};
+                    let VideoFeedObjects = [];
+                    let PointCloudObjects = [];
+                    data.data.dataStreams.map((data_stream) => {
+                        if (!data_stream.isPointCloud) {
+                            //add video feeds
+                            VideoFeedObjects.push([data_stream, viewer]);
+                        } else {
+                            //add point clouds
+                            PointCloudObjects.push([data_stream, viewer]);
+                        }
+                    });
+                    //set lists
+                    setVideoFeedList(VideoFeedObjects);
+                    setPointCloudList(PointCloudObjects);
+                }
             }
-          } catch (err) {
+        } catch (err) {
             throw err;
-          }
+        }
     }
 
-        // Function that dinamicly resizes the canvas
-        const reportWindowSize = (e) => {      
-            let WW =  window.outerWidth ;
-            if(WW<500){
-                //xs
-                setWidth(312);
-                setHeight(312);
-            }else if(WW>=500 && WW < 768){
-               //sm
-               setWidth(460);
-               setHeight(312);
-            }else if(WW>=768 && WW<992){
-               //md 
-               setWidth(300);
-               setHeight(312);
-            }else if(WW >=992 && WW<1200){
-                //l
-                setWidth(420);
-                setHeight(312);
-            }else if(WW >=1200 && WW <1400){
-                //xl
-                setWidth(500);
-                setHeight(400);
-            }else if(WW >1400){
-                //xxl
-                setWidth(612);
-                setHeight(400);
-            }
-          }
-        
+    // Function that dinamicly resizes the canvas
+    const reportWindowSize = (e) => {
+        let WW = window.outerWidth;
+        if (WW < 500) {
+            //xs
+            setWidth(312);
+            setHeight(312);
+        } else if (WW >= 500 && WW < 768) {
+            //sm
+            setWidth(460);
+            setHeight(312);
+        } else if (WW >= 768 && WW < 992) {
+            //md 
+            setWidth(300);
+            setHeight(312);
+        } else if (WW >= 992 && WW < 1200) {
+            //l
+            setWidth(420);
+            setHeight(312);
+        } else if (WW >= 1200 && WW < 1400) {
+            //xl
+            setWidth(500);
+            setHeight(400);
+        } else if (WW > 1400) {
+            //xxl
+            setWidth(612);
+            setHeight(400);
+        }
+    }
+
 
     return (
         <Container className="page-position h-100">
@@ -229,21 +236,26 @@ function ViewPage() {
                 setTopicTypes: SetTopicTypes,
                 setSelectedTopic: SetSelectedTopic
             }}>
-                <Dropdown className='mb-2'>
-                    <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                        <span style={{"marginRight":"5px"}}>Add funtionalities</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                        </svg>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        <Dropdown.Item id="video_feed" onClick={handleVideoFeeePopup}>Add video feed</Dropdown.Item>
-                        <Dropdown.Item id="data_stream" onClick={handleVideoFeeePopup}>Add point cloud</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
+                <div className='display_inline'>
+                    <Dropdown className='mb-2'>
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                            <span style={{ "marginRight": "5px" }}>Add funtionalities</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item id="video_feed" onClick={handleVideoFeeePopup}>Add video feed</Dropdown.Item>
+                            <Dropdown.Item id="data_stream" onClick={handleVideoFeeePopup}>Add point cloud</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+                    <Button onClick={handleShowServicePopup}>Call Service</Button>
+                </div>
 
                 <AddDataStreamPopup show={show} isPointCloud={isPointCloud} addPointCloudToList={addPointCloudToList} addVideoFeedToList={addVideoFeedToList} handleClose={handleClose} />
+                <CallServicePopup show={showServicePopup} handleClose={handleCloseServicePopup}></CallServicePopup>
 
                 <Row xs={1} md={2} lg={2}>
                     <Col>
@@ -257,25 +269,25 @@ function ViewPage() {
                 </Row>
                 <Row xs={1} md={2} lg={2}>
                     {videoFeedList.length > 0 &&
-                    videoFeedList.map((videoFeed,index)=>{
-                        return(
-                            <Col id={"VideoFeedCol"+index} key={index}>
-                                <VideoStream width ={width} height={height} removeVideoFeedFromList={removeVideoFeedFromList} videoFeed={videoFeed}></VideoStream>
-                            </Col>
-                        );
-                    })
+                        videoFeedList.map((videoFeed, index) => {
+                            return (
+                                <Col id={"VideoFeedCol" + index} key={index}>
+                                    <VideoStream width={width} height={height} removeVideoFeedFromList={removeVideoFeedFromList} videoFeed={videoFeed}></VideoStream>
+                                </Col>
+                            );
+                        })
                     }
                     {pointCloudList.length > 0 &&
-                    pointCloudList.map((pointCloud, index)=>{
-                        return(
-                            <Col id={"PointCloud"+index} key={index}>
-                                <PointCloud width ={width} height={height} pointCloud={pointCloud} removePointCloudFromList={removePointCloudFromList} ></PointCloud>
-                            </Col>
-                        );
-                    }) 
+                        pointCloudList.map((pointCloud, index) => {
+                            return (
+                                <Col id={"PointCloud" + index} key={index}>
+                                    <PointCloud width={width} height={height} pointCloud={pointCloud} removePointCloudFromList={removePointCloudFromList} ></PointCloud>
+                                </Col>
+                            );
+                        })
                     }
                 </Row>
-            
+
             </TopicContext.Provider>
         </Container>
     );
