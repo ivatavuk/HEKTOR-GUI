@@ -29,8 +29,14 @@ app.use('/graphql',graphqlHTTP({
     rootValue:graphQLResolvers,
     graphiql:true
 }));
-
+/*
 mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.ef54xcz.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`).
+then(()=>{
+    app.listen(8000);
+}).catch(err => {console.log(err);});
+*/
+
+mongoose.connect('mongodb://127.0.0.1/hektor-gui').
 then(()=>{
     app.listen(8000);
 }).catch(err => {console.log(err);});
